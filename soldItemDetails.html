@@ -1,0 +1,103 @@
+<!-- Import and setup bootstrap -->
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<!-- Alert message -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<p class="alert-info">{{ message }}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<!-- Message continued -->
+<p class="alert-info justify-content-center">{{ message }}</li>
+
+    <main class="container-fluid">
+        {% if item == None %}
+        <div class="d-flex mt-3 justify-content-center">
+            <h1>Page Unavailable</h1>
+        </div>
+        <br>
+        {% else %}
+        <div class="d-flex mt-3 justify-content-center">
+            <h1>Sold Item: {{item.name}}</h1>
+        </div>
+        <div class="row mt-5 mb-5 justify-content-center">
+            <div class="col-md-10">
+                <div class="media border p-3">
+                    <img class="custom" src="../{{item.image}}">
+                </div>
+            </div>
+        </div>
+        <!-- Display seller info -->
+        <div class="row mt-5 mb-5 justify-content-center">
+            <div class="col-md-10">
+                <div class=" media border p-3">
+                    <div class="col-md-9">
+                        <div class="align-self-center media-body">
+                            <h5 class="mt-0">Seller:</h5>
+                            <p>{{item.seller}}</p>
+                            <h5 class="mt-0">Contact:</h5>
+                            <p>
+                                {% for user in users %}
+                                {% if user.id == item.user_id %}
+                                {{user.emailid}}, 0{{user.phone_no}}
+                                {%endif%}
+                                {%endfor%}
+                            </p>
+                            <h6 class="mt-0">Posted: <small>{{item.created_date}}</small></h6>
+                        </div>
+                    </div>
+                    <div class="col-sm-auto">
+                        <div class="align-self-center media-body">
+                            <h5 class="mt-0">Price: <small>${{item.price}}</small></h5>
+                            <!-- {% if current_user.name !=none %}
+
+                        {% endif %} -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Display buyer info -->
+        <div class="row mt-5 mb-5 justify-content-center">
+            <div class="col-md-10">
+                <div class=" media border p-3">
+                    <div class="col-md-9">
+                        <div class="align-self-center media-body">
+                            <h5 class="mt-0">Buyer:</h5>
+                            <p>{{bid.bidder_name}}</p>
+                            <h5 class="mt-0">Contact:</h5>
+                            <p>
+                                {{bid.bidder_email}}, 0{{bid.bidder_phone}}
+                            </p>
+                            <h6 class="mt-0">Purchased Date: <small>{{purchase.purchased_date}}</small></h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Item info -->
+        <div class="row mt-5 mb-5 justify-content-center">
+            <div class="col-md-10">
+                <div class="media border p-3">
+                    <div class="align-self-center media-body">
+
+                        <h5 class="mt-0">Model:</h5>
+                        <p>{{item.model}}</p>
+                        <h5 class="mt-0">Quality:</h5>
+                        <p>{{item.quality}}</p>
+                        <h5 class="mt-0">Description:</h5>
+                        <p>{{item.description}}</p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </main> <!-- End main content area -->
+
+
+    {% endblock %}

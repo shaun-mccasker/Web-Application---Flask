@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block search %}
+<div class="jumbotron shadow py-4 mb-4 ">
+    <h1 class="text-center">Search For Item by Category</h1>
+    <form method="POST" class="form-inline d-flex flex-nowrap">
+        {{ formSearch.hidden_tag()}} <div class="col-md-10">
+            {{formSearch.category(class="form-control flex-grow-1 my-1 mr-sm-2")}}
+        </div>
+
+        <div class="col-md-1">
+            {{formSearch.submit(class="flex-shrink-1 btn btn-primary my-1")}}
+        </div>
+
+        <!--{{wtf.quick_form(formSearch)}}-->
+    </form>
+</div>
+{% endblock %}
+
+{% block content %}
+<main class="container-fluid">
+    <div class="d-flex justify-content-center">
+        <h1>{{heading}}</h1>
+    </div>
+
+    <section>
+
+        {% for item in items %}
+
+        <div class="row mt-5 mb-5 justify-content-center">
+            <div class="col-md-10">
+                <div class="media border p-3">
+                    <img class="align-self-center mr-3" style="max-width: 120px" src="../{{item.image}}" alt="1080ti">
+                    <div class="align-self-center media-body">
+                        <h5 class="mt-0">{{item.name}}</h5>
+                        <h6 class="mt-0">${{item.price}}</h6>
+                        <p>{{item.description}}</p>
+                        {% if type == "view" %}
+                        <a href="/viewItem/{{item.id}}" class="btn btn-primary">View Item</a>
+                        {% endif %}
+                        {% if type == "sold" %}
+                        <a href="/soldItem/{{item.id}}" class="btn btn-primary">View Sold Item</a>
+                        {% endif %}
+                        {% if type == "selling" %}
+                        <a href="/manageItem/{{item.id}}" class="btn btn-primary">Manage Item</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+        <br>
+    </section>
+</main>
+
+{% endblock %}

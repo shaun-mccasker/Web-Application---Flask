@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<!-- Alert message -->
+<p class="alert-info justify-content-center">
+    {{ message }}
+</p>
+
+<main class="container-fluid">
+    {% if item == None %}
+    <!-- Page unavaliable response -->
+    <div class="d-flex mt-3 justify-content-center">
+        <h1>Page Unavailable</h1>
+    </div>
+    <!-- Normal page response -->
+    <br>
+    {% else %}
+    <div class="d-flex mt-3 justify-content-center">
+        <h1>{{item.name}}</h1>
+    </div>
+    <div class="row mt-5 mb-5 justify-content-center">
+        <div class="col-md-10">
+            <div class="media border p-3">
+                <img class="custom" src="../{{item.image}}">
+            </div>
+        </div>
+    </div>
+    <!-- Seller section -->
+    <div class="row mt-5 mb-5 justify-content-center">
+        <div class="col-md-10">
+            <div class=" media border p-3">
+                <div class="col-md-9">
+                    <div class="align-self-center media-body">
+                        <h5 class="mt-0">Seller:</h5>
+                        <p>{{item.seller}}</p>
+                        <h5 class="mt-0">Contact:</h5>
+                        <p>
+                            {% for user in users %}
+                            {% if user.id == item.user_id %}
+                            {{user.emailid}}, 0{{user.phone_no}}
+                            {%endif%}
+                            {%endfor%}
+                        </p>
+                        <h6 class="mt-0">Posted: <small>{{item.created_date}}</small></h6>
+                    </div>
+                </div>
+                <div class="col-sm-auto">
+                    <div class="align-self-center media-body">
+                        <h5 class="mt-0">Price: <small>${{item.price}}</small></h5>
+
+                        <!-- Modal -->
+                        {% if bids == None %}
+                        {% if current_user.id != item.user_id %}
+                        {% if current_user.is_authenticated %}
+
+                        <a href="./viewItem.html" class="btn btn-primary" data-toggle="modal" data-target="#Sell">Place
+                            Bid</a>
+                        <!-- button trigger modal -->
+                        </button>
+                        <div class="modal fade" id="Sell" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">Are you sure?
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to bid on {{item.name}}?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form method="POST">
+                                            {{ bid.hidden_tag()}}
+                                            {{bid.submit(class="flex-shrink-1 btn btn-primary my-1")}}
+
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">No</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <a href="./viewItem.html" class="btn btn-primary" data-toggle="modal"
+                            data-target="#exampleModalCenter">Place
+                            Bid</a>
+                        <!-- button trigger modal -->
+                        </button>
+                        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">Are you a registered
+                                            user?
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Please Login to place a bid on this item. If you don't currently have an
+                                        account
+                                        then please register for one.
+                                    </div>
+                                    <div class="modal-body">
+                                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
+                                            Login</a>
+                                        <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Register</a>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Close</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% else %}
+                        <a href="./viewItem.html" class="btn btn-primary" data-toggle="modal"
+                            data-target="#exampleModalCenter">Place
+                            Bid</a>
+                        <!-- button trigger modal -->
+                        </button>
+                        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">Bid Denied
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Sorry but you cannot place a bid on your own item.
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Close</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% else %}
+                        <a href="./viewItem.html" class="btn btn-primary" data-toggle="modal"
+                            data-target="#exampleModalCenter">Place
+                            Bid</a>
+                        <!-- button trigger modal -->
+                        </button>
+                        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">Bid Denied
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Sorry but you have already bidded on this item
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Close</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <!-- {% if current_user.name !=none %}
+
+                        {% endif %} -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5 mb-5 justify-content-center">
+        <div class="col-md-10">
+            <div class="media border p-3">
+                <div class="align-self-center media-body">
+
+                    <h5 class="mt-0">Model:</h5>
+                    <p>{{item.model}}</p>
+                    <h5 class="mt-0">Quality:</h5>
+                    <p>{{item.quality}}</p>
+                    <h5 class="mt-0">Description:</h5>
+                    <p>{{item.description}}</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</main> <!-- End main content area -->
+
+
+{% endblock %}

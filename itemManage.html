@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+<!-- Page unavaliable response -->
+{% block content %}
+<main class="container-fluid">
+    {% if item == None %}
+    <div class="d-flex mt-3 justify-content-center">
+        <h1>Page Unavailable</h1>
+    </div>
+    <!-- Normal page response -->
+    <br>
+    {% else %}
+    {% if current_user.id == item.user_id%}
+    <div class="d-flex mt-3 justify-content-center">
+        <h1>{{item.name}}</h1>
+    </div>
+    <div class="row mt-5 mb-5 justify-content-center">
+        <div class="col-md-10">
+            <div class="media border p-3">
+                <img class="custom" src="../{{item.image}}">
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- Manage item section -->
+    <div class="d-flex mt-3 justify-content-center">
+        <h1>Manage item</h1>
+    </div>
+    <div class="row mt-5 mb-5 justify-content-center">
+        <div class="col-md-10">
+            <div class=" media border p-3">
+                <div class="col-md-9">
+                    <div class="align-self-center media-body">
+                        <h5 class="mt-0">Seller:</h5>
+                        <p>{{item.seller}}</p>
+                        <h5 class="mt-0">Contact:</h5>
+                        <p>
+                            {% for user in users %}
+                            {% if user.id == item.user_id %}
+                            {{user.emailid}}, 0{{user.phone_no}}
+                            {%endif%}
+                            {%endfor%}
+                        </p>
+                        <h6 class="mt-0">Posted: <small>{{item.created_date}}</small></h6>
+                    </div>
+                </div>
+                <div class="col-sm-auto">
+                    <div class="align-self-center media-body">
+                        <h5 class="mt-0">Price: <small>${{item.price}}</small></h5>
+                    </div>
+                </div>
+                {% if current_user.name !=none %}
+                <a href="./viewItem.html" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                    Edit Details</a>
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalCenterTitle">Edit</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                {{wtf.quick_form(form)}}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- Item info -->
+    <div class="row mt-5 mb-5 justify-content-center">
+        <div class="col-md-10">
+            <div class="media border p-3">
+                <div class="align-self-center media-body">
+                    <h5 class="mt-0">Model:</h5>
+                    <p>{{item.model}}</p>
+                    <h5 class="mt-0">Description:</h5>
+                    <p>{{item.description}}</p>
+                    <h5 class="mt-0">Quality:</h5>
+                    <p>{{item.quality}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Item Bids -->
+    <div class="row mt-5 mb-5 justify-content-center">
+        <div class="col-md-10">
+            <div class="media border p-3">
+                <div class="align-self-center media-body">
+                    <h5 class="mt-0">Item Bids:</h5>
+                    {% for bid in bids %}
+                    {% if bid.item_id == item.id %}
+                    <div class="col-md-8">
+                        Bidder: {{bid.bidder_name}}, {{bid.bidder_email}}, {{bid.created_date}}
+                    </div>
+                    <div class="col-auto">
+                        <a href="./viewItem.html" class="btn btn-primary" data-toggle="modal"
+                            data-target="#Sell{{bid.bidder_name}}">Sell
+                            Item to {{bid.bidder_name}}</a>
+                        <!-- button trigger modal -->
+                        </button>
+                        <div class="modal fade" id="Sell{{bid.bidder_name}}" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">Are you sure?
+                                        </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to sell {{item.name}} to {{bid.bidder_name}}?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a href="/sellItem/{{bid.id}}" class="btn btn-primary">
+                                            Yes</a>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    {%endif%}
+                    {%endfor%}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="d-flex mt-3 justify-content-center">
+        <h1>Page not available</h1>
+    </div>
+    <br>
+    {% endif %}
+    {% endif %}
+</main> <!-- End main content area -->
+
+
+{% endblock %}
